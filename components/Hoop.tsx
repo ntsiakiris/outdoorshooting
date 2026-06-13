@@ -1,9 +1,9 @@
 "use client";
 
-import * as THREE from "three";
 import { useMemo } from "react";
 import { RigidBody, CuboidCollider, BallCollider } from "@react-three/rapier";
 import { HOOP } from "@/lib/physics";
+import Net from "./Net";
 
 const RIM_Y = HOOP.center.y; // 3.05
 const RIM_Z = HOOP.center.z; // -7
@@ -21,54 +21,6 @@ export default function Hoop() {
     }
     return arr;
   }, []);
-
-  // net: vertical strands fanning slightly inward
-  const netLines = useMemo(() => {
-    const lines: THREE.Vector3[][] = [];
-    const n = 12;
-    const depth = 0.42;
-    for (let i = 0; i < n; i++) {
-      const a = (i / n) * Math.PI * 2;
-      const top = new THREE.Vector3(
-        Math.cos(a) * RIM_R,
-        0,
-        Math.sin(a) * RIM_R
-      );
-      const bot = new THREE.Vector3(
-        Math.cos(a) * RIM_R * 0.55,
-        -depth,
-        Math.sin(a) * RIM_R * 0.55
-      );
-      lines.push([top, bot]);
-    }
-    return lines;
-  }, []);
-
-  const netGeo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    const pts: number[] = [];
-    netLines.forEach(([a, b]) => {
-      pts.push(a.x, a.y, a.z, b.x, b.y, b.z);
-    });
-    // horizontal weave ring mid-way
-    const n = 12;
-    const midY = -0.22;
-    const midR = RIM_R * 0.78;
-    for (let i = 0; i < n; i++) {
-      const a0 = (i / n) * Math.PI * 2;
-      const a1 = ((i + 1) / n) * Math.PI * 2;
-      pts.push(
-        Math.cos(a0) * midR,
-        midY,
-        Math.sin(a0) * midR,
-        Math.cos(a1) * midR,
-        midY,
-        Math.sin(a1) * midR
-      );
-    }
-    g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
-    return g;
-  }, [netLines]);
 
   return (
     <group>
@@ -123,12 +75,8 @@ export default function Hoop() {
         ))}
       </RigidBody>
 
-      {/* ---- Net (visual) ---- */}
-      <group position={[0, RIM_Y, RIM_Z]}>
-        <lineSegments geometry={netGeo}>
-          <lineBasicMaterial color="#f5f0e6" transparent opacity={0.7} />
-        </lineSegments>
-      </group>
+      {/* ---- Net (animated visual + colliders) ---- */}
+      <Net />
     </group>
   );
 }
