@@ -103,7 +103,7 @@ export default function Ball() {
       ) {
         const dx = p.x - 0;
         const dz = p.z - RIM_Z;
-        if (Math.sqrt(dx * dx + dz * dz) < HOOP.rimRadius * 0.92) {
+        if (Math.sqrt(dx * dx + dz * dz) < HOOP.rimRadius * 1.3) {
           scored.current = true;
           const dist = distanceFromHoop(g.shooter.x, g.shooter.z);
           g.resolveScore(!g.rimTouched, dist);

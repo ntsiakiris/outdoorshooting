@@ -76,7 +76,7 @@ export default function UI() {
   const pct = attempts > 0 ? Math.round((makes / attempts) * 100) : 0;
   const elevDeg = Math.round(aim.elevation * RAD2DEG);
   const windScreenDeg = (Math.atan2(wind.dirX, -wind.dirZ) * RAD2DEG) % 360;
-  const windStrength = wind.mag < 1.6 ? "CALM" : wind.mag < 3.4 ? "BREEZY" : "GUSTY";
+  const windStrength = wind.mag < 0.9 ? "CALM" : wind.mag < 1.7 ? "BREEZY" : "GUSTY";
 
   return (
     <div className="pointer-events-none absolute inset-0 select-none">
@@ -122,7 +122,7 @@ export default function UI() {
             >
               ↑
             </span>
-            {wind.mag > 3.4 && (
+            {wind.mag > 1.7 && (
               <span className="absolute inset-0 rounded-full border border-flame/40 animate-pulseRing" />
             )}
           </div>

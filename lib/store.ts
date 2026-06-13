@@ -43,9 +43,14 @@ const SPOTS: Record<Mode, { x: number; z: number }[]> = {
 };
 
 function rollWind(): Wind {
-  const angle = Math.random() * Math.PI * 2;
-  const mag = +(Math.random() * 3.6).toFixed(1); // 0..3.6 m/s
-  return { dirX: Math.cos(angle), dirZ: Math.sin(angle), mag, angle };
+  // Pure crosswind: pushes the ball left/right only, never down-court.
+  // A down-court (tailwind) component overshoots the hoop; an up-court
+  // (headwind) component makes shots impossible. Both are unfair, so the
+  // wind is sideways-only — a clean skill test of lateral aim.
+  const dirX = Math.random() < 0.5 ? -1 : 1;
+  const dirZ = 0;
+  const mag = +(Math.random() * 2.4).toFixed(1); // 0..2.4 m/s
+  return { dirX, dirZ, mag, angle: Math.atan2(dirX, -dirZ) };
 }
 
 interface GameState {
