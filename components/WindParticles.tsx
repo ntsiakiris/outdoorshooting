@@ -26,11 +26,11 @@ export default function WindParticles() {
     const pts = ref.current;
     if (!pts) return;
     const dt = Math.min(dtRaw, 1 / 30);
-    const { wind } = useGame.getState();
+    const { wind, windEnabled } = useGame.getState();
     const attr = pts.geometry.attributes.position as THREE.BufferAttribute;
     const a = attr.array as Float32Array;
-    const vx = wind.dirX * wind.mag * 0.5;
-    const vz = wind.dirZ * wind.mag * 0.5;
+    const vx = windEnabled ? wind.dirX * wind.mag * 0.5 : 0;
+    const vz = windEnabled ? wind.dirZ * wind.mag * 0.5 : 0;
     for (let i = 0; i < COUNT; i++) {
       a[i * 3] += vx * dt;
       a[i * 3 + 1] -= 0.15 * dt; // slow fall

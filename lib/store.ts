@@ -57,6 +57,7 @@ interface GameState {
   mode: Mode;
   phase: Phase;
   wind: Wind;
+  windEnabled: boolean; // master wind on/off
   hardMode: boolean; // wind shifts mid-air
 
   spotIndex: number;
@@ -83,6 +84,7 @@ interface GameState {
   // actions
   setMode: (m: Mode) => void;
   setSpot: (i: number) => void;
+  toggleWind: () => void;
   toggleHard: () => void;
   setCharging: (b: boolean) => void;
   setAim: (a: Partial<ShotInput>) => void;
@@ -110,6 +112,7 @@ export const useGame = create<GameState>((set, get) => ({
   mode: "three",
   phase: "aiming",
   wind: rollWind(),
+  windEnabled: false, // start calm; player opts into wind
   hardMode: false,
 
   spotIndex: 0,
@@ -160,6 +163,8 @@ export const useGame = create<GameState>((set, get) => ({
       aim: { ...aim, yaw: baseYaw, power: 0.55 },
     });
   },
+
+  toggleWind: () => set((s) => ({ windEnabled: !s.windEnabled })),
 
   toggleHard: () => set((s) => ({ hardMode: !s.hardMode })),
 

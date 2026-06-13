@@ -13,6 +13,7 @@ import {
   HOOP,
 } from "@/lib/physics";
 
+const ZERO = new THREE.Vector3();
 const HOLD_Y = 1.75;
 const RIM_Y = HOOP.center.y;
 const RIM_Z = HOOP.center.z;
@@ -71,7 +72,7 @@ export default function Ball() {
       b.setAngvel({ x: -6, y: 0, z: 0 }, true);
       launchT.current = t;
       scored.current = false;
-      windLocal.current.copy(windAccel(g.wind));
+      windLocal.current.copy(g.windEnabled ? windAccel(g.wind) : ZERO);
     }
 
     // ---- FLYING: apply wind, watch for score / miss ----
@@ -103,7 +104,7 @@ export default function Ball() {
       ) {
         const dx = p.x - 0;
         const dz = p.z - RIM_Z;
-        if (Math.sqrt(dx * dx + dz * dz) < HOOP.rimRadius * 1.7) {
+        if (Math.sqrt(dx * dx + dz * dz) < HOOP.rimRadius * 2.6) {
           scored.current = true;
           const dist = distanceFromHoop(g.shooter.x, g.shooter.z);
           g.resolveScore(!g.rimTouched, dist);

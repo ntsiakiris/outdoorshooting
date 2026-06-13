@@ -69,6 +69,8 @@ export default function UI() {
     charging,
     spotIndex,
     setSpot,
+    windEnabled,
+    toggleWind,
     hardMode,
     toggleHard,
   } = useGame();
@@ -108,11 +110,21 @@ export default function UI() {
         >
           <div className="flex flex-col items-end leading-none">
             <span className="font-mono text-[9px] uppercase tracking-mega text-chalk/45 sm:text-[10px]">
-              Wind · {windStrength}
+              Wind · {windEnabled ? windStrength : "OFF"}
             </span>
-            <span className="font-mono text-base font-bold text-ember sm:text-2xl">
-              {compassGlyph(wind.dirX, wind.dirZ)} {wind.mag.toFixed(1)}
-              <span className="text-xs text-chalk/50 sm:text-sm"> m/s</span>
+            <span
+              className={`font-mono text-base font-bold sm:text-2xl ${
+                windEnabled ? "text-ember" : "text-chalk/30"
+              }`}
+            >
+              {windEnabled ? (
+                <>
+                  {compassGlyph(wind.dirX, wind.dirZ)} {wind.mag.toFixed(1)}
+                  <span className="text-xs text-chalk/50 sm:text-sm"> m/s</span>
+                </>
+              ) : (
+                "—"
+              )}
             </span>
           </div>
           <div className="relative grid h-9 w-9 place-items-center rounded-full border border-chalk/15 sm:h-12 sm:w-12">
@@ -122,7 +134,7 @@ export default function UI() {
             >
               ↑
             </span>
-            {wind.mag > 1.7 && (
+            {windEnabled && wind.mag > 1.7 && (
               <span className="absolute inset-0 rounded-full border border-flame/40 animate-pulseRing" />
             )}
           </div>
@@ -168,15 +180,28 @@ export default function UI() {
           )}
           <button
             data-ui
-            onClick={toggleHard}
+            onClick={toggleWind}
             className={`pointer-events-auto rounded-lg border px-3 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
-              hardMode
+              windEnabled
                 ? "border-flame bg-flame/20 text-flame"
                 : "border-chalk/15 bg-black/40 text-chalk/55 hover:text-chalk"
             }`}
           >
-            Hard Wind {hardMode ? "ON" : "OFF"}
+            Wind {windEnabled ? "ON" : "OFF"}
           </button>
+          {windEnabled && (
+            <button
+              data-ui
+              onClick={toggleHard}
+              className={`pointer-events-auto rounded-lg border px-3 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+                hardMode
+                  ? "border-flame bg-flame/20 text-flame"
+                  : "border-chalk/15 bg-black/40 text-chalk/55 hover:text-chalk"
+              }`}
+            >
+              Hard {hardMode ? "ON" : "OFF"}
+            </button>
+          )}
         </div>
       </div>
 
