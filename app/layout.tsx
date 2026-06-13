@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Space_Mono, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -21,6 +21,15 @@ const body = Outfit({
 export const metadata: Metadata = {
   title: "DOWNTOWN · 3PT Shootout",
   description: "Skill-based 3D basketball shooting game with a live wind system.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+  themeColor: "#0c0a09",
 };
 
 export default function RootLayout({

@@ -27,7 +27,7 @@ export default function GamePage() {
   useEffect(() => setMounted(true), []);
 
   return (
-    <main className="grain relative h-screen w-screen overflow-hidden bg-court">
+    <main className="grain relative h-[100dvh] w-screen overflow-hidden bg-court">
       <Scene />
       {mounted && (
         <>

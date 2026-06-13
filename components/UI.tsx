@@ -15,10 +15,10 @@ function compassGlyph(dirX: number, dirZ: number) {
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex flex-col items-start leading-none">
-      <span className="font-mono text-[10px] uppercase tracking-mega text-chalk/45">
+      <span className="font-mono text-[9px] uppercase tracking-mega text-chalk/45 sm:text-[10px]">
         {label}
       </span>
-      <span className="font-display text-3xl text-chalk">{value}</span>
+      <span className="font-display text-xl text-chalk sm:text-3xl">{value}</span>
     </div>
   );
 }
@@ -81,19 +81,19 @@ export default function UI() {
   return (
     <div className="pointer-events-none absolute inset-0 select-none">
       {/* ---- Top bar ---- */}
-      <div className="absolute left-0 right-0 top-0 flex items-start justify-between p-5 md:p-7">
+      <div className="absolute left-0 right-0 top-0 flex items-start justify-between gap-2 p-3 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-5 md:p-7">
         {/* scoreboard */}
         <div
           data-ui
-          className="pointer-events-auto flex items-end gap-6 rounded-xl border border-chalk/10 bg-black/35 px-5 py-3 backdrop-blur-md"
+          className="pointer-events-auto flex items-end gap-3 rounded-xl border border-chalk/10 bg-black/35 px-3 py-2 backdrop-blur-md sm:gap-6 sm:px-5 sm:py-3"
         >
           <div className="flex flex-col leading-none">
-            <span className="font-mono text-[10px] uppercase tracking-mega text-flame">
+            <span className="font-mono text-[9px] uppercase tracking-mega text-flame sm:text-[10px]">
               Downtown
             </span>
-            <span className="font-display text-6xl text-chalk">{score}</span>
+            <span className="font-display text-4xl text-chalk sm:text-6xl">{score}</span>
           </div>
-          <div className="mb-1 flex gap-5">
+          <div className="mb-1 flex gap-2 sm:gap-5">
             <Stat label="Made" value={`${makes}/${attempts}`} />
             <Stat label="FG%" value={`${pct}`} />
             <Stat label="Streak" value={streak} />
@@ -104,18 +104,18 @@ export default function UI() {
         {/* wind */}
         <div
           data-ui
-          className="pointer-events-auto flex items-center gap-4 rounded-xl border border-chalk/10 bg-black/35 px-5 py-3 backdrop-blur-md"
+          className="pointer-events-auto flex items-center gap-2 rounded-xl border border-chalk/10 bg-black/35 px-3 py-2 backdrop-blur-md sm:gap-4 sm:px-5 sm:py-3"
         >
           <div className="flex flex-col items-end leading-none">
-            <span className="font-mono text-[10px] uppercase tracking-mega text-chalk/45">
+            <span className="font-mono text-[9px] uppercase tracking-mega text-chalk/45 sm:text-[10px]">
               Wind · {windStrength}
             </span>
-            <span className="font-mono text-2xl font-bold text-ember">
+            <span className="font-mono text-base font-bold text-ember sm:text-2xl">
               {compassGlyph(wind.dirX, wind.dirZ)} {wind.mag.toFixed(1)}
-              <span className="text-sm text-chalk/50"> m/s</span>
+              <span className="text-xs text-chalk/50 sm:text-sm"> m/s</span>
             </span>
           </div>
-          <div className="relative grid h-12 w-12 place-items-center rounded-full border border-chalk/15">
+          <div className="relative grid h-9 w-9 place-items-center rounded-full border border-chalk/15 sm:h-12 sm:w-12">
             <span
               className="text-2xl text-flame transition-transform duration-300"
               style={{ transform: `rotate(${windScreenDeg}deg)` }}
@@ -181,7 +181,7 @@ export default function UI() {
       </div>
 
       {/* ---- Bottom-center: power + elevation ---- */}
-      <div className="absolute bottom-6 left-1/2 flex w-[min(420px,80vw)] -translate-x-1/2 flex-col items-center gap-2">
+      <div className="absolute bottom-28 left-1/2 flex w-[min(420px,92vw)] -translate-x-1/2 flex-col items-center gap-2 sm:bottom-6">
         <div className="flex w-full items-center gap-3">
           <span className="font-mono text-[10px] uppercase tracking-mega text-chalk/45">
             Pow

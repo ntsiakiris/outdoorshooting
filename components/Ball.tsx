@@ -20,6 +20,7 @@ const RESET_DELAY = 1.4;
 
 export default function Ball() {
   const body = useRef<RapierRigidBody>(null);
+  const spin = useRef<THREE.Group>(null);
   const lastSeq = useRef(0);
   const prevY = useRef(HOLD_Y);
   const launchT = useRef(0);
@@ -42,14 +43,22 @@ export default function Ball() {
     const g = useGame.getState();
     const t = state.clock.elapsedTime;
 
-    // ---- AIMING: hold the ball at the shooter, ignore gravity ----
+    // ---- AIMING: hold the ball at the shooter, idle spin, ignore gravity ----
     if (g.phase === "aiming") {
       b.setGravityScale(0, true);
       place(g.shooter.x, HOLD_Y, g.shooter.z);
       prevY.current = HOLD_Y;
       scored.current = false;
+      if (spin.current) {
+        spin.current.rotation.x -= dt * 1.2;
+        spin.current.rotation.y += dt * 0.6;
+      }
       return;
     }
+
+    // mid-flight the RigidBody itself spins (angvel); keep the visual group
+    // neutral so it tracks the body rotation instead of double-spinning.
+    if (spin.current) spin.current.rotation.set(0, 0, 0);
 
     // ---- LAUNCH: detect a new shot sequence ----
     if (g.shotSeq !== lastSeq.current) {
@@ -141,7 +150,7 @@ export default function Ball() {
       }}
     >
       <BallCollider args={[BALL_RADIUS]} />
-      <group>
+      <group ref={spin}>
         <mesh castShadow>
           <sphereGeometry args={[BALL_RADIUS, 32, 32]} />
           <meshStandardMaterial color="#e8702a" roughness={0.85} metalness={0.05} />

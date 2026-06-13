@@ -44,7 +44,7 @@ const SPOTS: Record<Mode, { x: number; z: number }[]> = {
 
 function rollWind(): Wind {
   const angle = Math.random() * Math.PI * 2;
-  const mag = +(Math.random() * 5).toFixed(1); // 0..5 m/s
+  const mag = +(Math.random() * 3.6).toFixed(1); // 0..3.6 m/s
   return { dirX: Math.cos(angle), dirZ: Math.sin(angle), mag, angle };
 }
 
