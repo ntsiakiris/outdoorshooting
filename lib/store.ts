@@ -49,7 +49,7 @@ function rollWind(): Wind {
   // wind is sideways-only — a clean skill test of lateral aim.
   const dirX = Math.random() < 0.5 ? -1 : 1;
   const dirZ = 0;
-  const mag = +(Math.random() * 2.4).toFixed(1); // 0..2.4 m/s
+  const mag = +(Math.random() * 1.4).toFixed(1); // 0..1.4 m/s
   return { dirX, dirZ, mag, angle: Math.atan2(dirX, -dirZ) };
 }
 

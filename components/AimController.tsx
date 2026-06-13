@@ -6,7 +6,7 @@ import { clamp } from "@/lib/physics";
 
 const MIN_ELEV = (22 * Math.PI) / 180;
 const MAX_ELEV = (66 * Math.PI) / 180;
-const POWER_PX = 260;
+const POWER_PX = 200;
 
 /**
  * Headless input layer. Binds window listeners and writes aim/launch into the
@@ -20,6 +20,8 @@ export default function AimController() {
   const start = useRef({ x: 0, y: 0 });
   const spaceCharging = useRef(false);
   const raf = useRef<number>();
+  // active touch pointer ids — 2+ means a camera gesture, not an aim drag
+  const touches = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     const g = () => useGame.getState();
@@ -27,8 +29,23 @@ export default function AimController() {
     const overUI = (t: EventTarget | null) =>
       t instanceof Element && !!t.closest("[data-ui]");
 
+    const cancelDrag = () => {
+      dragging.current = false;
+      g().setCharging(false);
+      g().setAim({ power: 0.05 });
+    };
+
     const onDown = (e: PointerEvent) => {
-      if (e.button !== 0) return;
+      if (e.pointerType === "touch") {
+        touches.current.add(e.pointerId);
+        // second finger down -> hand off to camera orbit, abort the aim
+        if (touches.current.size >= 2) {
+          cancelDrag();
+          return;
+        }
+      } else if (e.button !== 0) {
+        return;
+      }
       if (overUI(e.target)) return;
       if (g().phase !== "aiming") return;
       dragging.current = true;
@@ -38,6 +55,8 @@ export default function AimController() {
     };
 
     const onMove = (e: PointerEvent) => {
+      // ignore movement while a multi-finger (camera) gesture is active
+      if (e.pointerType === "touch" && touches.current.size >= 2) return;
       if (!dragging.current) return;
       const s = g();
       const dx = e.clientX - start.current.x;
@@ -53,11 +72,22 @@ export default function AimController() {
       s.setAim({ power, yaw });
     };
 
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerType === "touch") touches.current.delete(e.pointerId);
       if (!dragging.current) return;
+      // if a 2-finger camera gesture is winding down, don't fire a shot
+      if (e.pointerType === "touch" && touches.current.size >= 1) {
+        cancelDrag();
+        return;
+      }
       dragging.current = false;
       if (g().aim.power > 0.12 && g().phase === "aiming") g().launch();
       else g().setCharging(false);
+    };
+
+    const onCancel = (e: PointerEvent) => {
+      if (e.pointerType === "touch") touches.current.delete(e.pointerId);
+      if (dragging.current) cancelDrag();
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -124,6 +154,7 @@ export default function AimController() {
     window.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onCancel);
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
@@ -131,6 +162,7 @@ export default function AimController() {
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onCancel);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);

@@ -32,7 +32,7 @@ export function aimToVelocity(aim: ShotInput): THREE.Vector3 {
 
 /** Wind acceleration vector (m/s^2) from a Wind, scaled by a drag-ish factor. */
 export function windAccel(wind: Wind): THREE.Vector3 {
-  const k = 0.32; // tuned so wind curves the shot without blowing it away
+  const k = 0.26; // tuned so wind curves the shot without blowing it away
   return new THREE.Vector3(wind.dirX * wind.mag * k, 0, wind.dirZ * wind.mag * k);
 }
 

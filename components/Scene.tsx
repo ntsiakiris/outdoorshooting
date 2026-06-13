@@ -82,6 +82,12 @@ export default function Scene() {
           MIDDLE: THREE.MOUSE.DOLLY,
           RIGHT: THREE.MOUSE.ROTATE,
         }}
+        touches={{
+          // one finger = aim/shoot (handled by AimController), not orbit
+          ONE: undefined as unknown as number,
+          // two fingers = rotate camera + pinch zoom
+          TWO: THREE.TOUCH.DOLLY_ROTATE,
+        }}
       />
     </Canvas>
   );
