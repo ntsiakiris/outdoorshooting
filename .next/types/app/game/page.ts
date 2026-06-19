@@ -1,4 +1,4 @@
-// File: C:\Users\nikos\OneDrive\Υπολογιστής\react projects\3points shooting\app\game\page.tsx
+// File: C:\Users\nikos\OneDrive\Υπολογιστής\react projects\outdoorshooting\app\game\page.tsx
 import * as entry from '../../../../app/game/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

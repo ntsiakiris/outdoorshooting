@@ -45,15 +45,27 @@ function Tree({ position }: { position: [number, number, number] }) {
 }
 
 export default function Court() {
-  // three-point arc (radius 6.75 from rim), clamped to a half circle facing shooter
-  const threeArc = useMemo(
-    () => arcPoints(0, HOOP_Z, 6.75, Math.PI * 0.08, Math.PI * 0.92),
-    []
-  );
+  // baseline sits just behind the rim
+  const BASE_Z = HOOP_Z - 0.4;
+  // free-throw line distance from baseline
+  const FT_Z = HOOP_Z + 4.6;
+
+  // three-point line: straight segments off the baseline into a front arc,
+  // so the whole line is one connected path (arc ends tie back to baseline).
+  const threeLine = useMemo(() => {
+    const arc = arcPoints(0, HOOP_Z, 6.75, Math.PI * 0.08, Math.PI * 0.92);
+    const right = arc[0];
+    const left = arc[arc.length - 1];
+    return [
+      [right[0], 0.02, BASE_Z] as [number, number, number],
+      ...arc,
+      [left[0], 0.02, BASE_Z] as [number, number, number],
+    ];
+  }, [BASE_Z]);
   // free-throw circle
   const ftCircle = useMemo(
-    () => arcPoints(0, HOOP_Z + 4.6, 1.8, 0, Math.PI * 2),
-    []
+    () => arcPoints(0, FT_Z, 1.8, 0, Math.PI * 2),
+    [FT_Z]
   );
 
   const fencePosts = useMemo(() => {
@@ -88,15 +100,15 @@ export default function Court() {
       </mesh>
 
       {/* court lines */}
-      <Line points={threeArc} color={CHALK} lineWidth={3} />
+      <Line points={threeLine} color={CHALK} lineWidth={3} />
       <Line points={ftCircle} color={CHALK} lineWidth={2} />
-      {/* key / lane */}
+      {/* key / lane — runs from baseline up to the free-throw line */}
       <Line
         points={[
-          [-0.95, 0.02, HOOP_Z],
-          [-0.95, 0.02, HOOP_Z + 4.6],
-          [0.95, 0.02, HOOP_Z + 4.6],
-          [0.95, 0.02, HOOP_Z],
+          [-0.95, 0.02, BASE_Z],
+          [-0.95, 0.02, FT_Z],
+          [0.95, 0.02, FT_Z],
+          [0.95, 0.02, BASE_Z],
         ]}
         color={CHALK}
         lineWidth={2}
@@ -104,11 +116,11 @@ export default function Court() {
       {/* baseline + sideline frame */}
       <Line
         points={[
-          [-8.5, 0.02, HOOP_Z - 0.4],
-          [8.5, 0.02, HOOP_Z - 0.4],
+          [-8.5, 0.02, BASE_Z],
+          [8.5, 0.02, BASE_Z],
           [8.5, 0.02, 5],
           [-8.5, 0.02, 5],
-          [-8.5, 0.02, HOOP_Z - 0.4],
+          [-8.5, 0.02, BASE_Z],
         ]}
         color={CHALK}
         lineWidth={2}

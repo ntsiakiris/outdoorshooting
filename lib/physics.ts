@@ -10,7 +10,7 @@ export const MAX_SPEED = 16; // m/s at power = 1
 export const HOOP = {
   center: new THREE.Vector3(0, 3.05, -7), // 10 ft rim
   rimRadius: 0.23,
-  backboardZ: -7.45,
+  backboardZ: -7.25, // pulled in so the board meets the back of the rim
 };
 
 /**

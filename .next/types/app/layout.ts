@@ -1,4 +1,4 @@
-// File: C:\Users\nikos\OneDrive\Υπολογιστής\react projects\3points shooting\app\layout.tsx
+// File: C:\Users\nikos\OneDrive\Υπολογιστής\react projects\outdoorshooting\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

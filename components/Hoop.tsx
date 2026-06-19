@@ -56,6 +56,12 @@ export default function Hoop() {
         />
       </RigidBody>
 
+      {/* ---- Connector bracket: links rim back to backboard ---- */}
+      <mesh position={[0, RIM_Y, RIM_Z - RIM_R - 0.06]} castShadow>
+        <boxGeometry args={[0.12, 0.05, 0.18]} />
+        <meshStandardMaterial color="#ff5722" metalness={0.7} roughness={0.3} />
+      </mesh>
+
       {/* ---- Rim: visual torus + ring of sphere colliders ---- */}
       <mesh
         position={[0, RIM_Y, RIM_Z]}
