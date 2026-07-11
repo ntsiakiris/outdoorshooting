@@ -42,14 +42,15 @@ const SPOTS: Record<Mode, { x: number; z: number }[]> = {
   ],
 };
 
-function rollWind(): Wind {
+function rollWind(hardMode = false): Wind {
   // Pure crosswind: pushes the ball left/right only, never down-court.
   // A down-court (tailwind) component overshoots the hoop; an up-court
   // (headwind) component makes shots impossible. Both are unfair, so the
   // wind is sideways-only — a clean skill test of lateral aim.
   const dirX = Math.random() < 0.5 ? -1 : 1;
   const dirZ = 0;
-  const mag = +(Math.random() * 0.5).toFixed(2); // 0..0.5 m/s
+  const max = hardMode ? 0.3 : 0.2; // keep shots playable
+  const mag = +(Math.random() * max).toFixed(2);
   return { dirX, dirZ, mag, angle: Math.atan2(dirX, -dirZ) };
 }
 
@@ -145,13 +146,13 @@ export const useGame = create<GameState>((set, get) => ({
         shooter,
         baseYaw,
         phase: "aiming",
-        wind: rollWind(),
+        wind: rollWind(s.hardMode),
         aim: { ...s.aim, yaw: baseYaw, power: 0.55 },
       };
     }),
 
   setSpot: (i) => {
-    const { mode, aim } = get();
+    const { mode, aim, hardMode } = get();
     const spots = SPOTS[mode];
     const idx = ((i % spots.length) + spots.length) % spots.length;
     const shooter = spots[idx];
@@ -161,14 +162,15 @@ export const useGame = create<GameState>((set, get) => ({
       shooter,
       baseYaw,
       phase: "aiming",
-      wind: rollWind(),
+      wind: rollWind(hardMode),
       aim: { ...aim, yaw: baseYaw, power: 0.55 },
     });
   },
 
   toggleWind: () => set((s) => ({ windEnabled: !s.windEnabled })),
 
-  toggleHard: () => set((s) => ({ hardMode: !s.hardMode })),
+  toggleHard: () =>
+    set((s) => ({ hardMode: !s.hardMode, wind: rollWind(!s.hardMode) })),
 
   setCharging: (b) => set({ charging: b }),
   setAim: (a) => set((s) => ({ aim: { ...s.aim, ...a } })),
@@ -225,7 +227,7 @@ export const useGame = create<GameState>((set, get) => ({
     set((s) => ({
       phase: "aiming",
       rimTouched: false,
-      wind: rollWind(),
+      wind: rollWind(s.hardMode),
       aim: { ...s.aim, yaw: s.baseYaw, power: 0.55 },
     })),
 
